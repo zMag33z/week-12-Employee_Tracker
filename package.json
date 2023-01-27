@@ -1,0 +1,30 @@
+{
+  "name": "week-12-employee_tracker",
+  "version": "1.0.0",
+  "description": "Employee tracker app using mysql for database and inquirer to prompt user for input.",
+  "main": "server.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "dependencies": {
+    "console.table": "^0.10.0",
+    "express": "^4.17.1",
+    "inquirer": "^8.2.4",
+    "mysql2": "^2.2.5"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zMag33z/week-12-Employee_Tracker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zMag33z/week-12-Employee_Tracker/issues"
+  },
+  "homepage": "https://github.com/zMag33z/week-12-Employee_Tracker#readme"
+}
