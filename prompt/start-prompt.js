@@ -1,5 +1,6 @@
 
 const inquirer = require('inquirer');
+const view = require('../handler/query');
 require('console.table');
 
 function startUp(){

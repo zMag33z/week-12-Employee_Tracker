@@ -1,5 +1,5 @@
 const mysql = require('mysql2');
-const startUp = require('../lib/prompt/start-prompt');
+const startUp = require('../prompt/start-prompt');
 
 // Use this connection
 const db = mysql.createConnection(
@@ -12,11 +12,11 @@ const db = mysql.createConnection(
 );
 
 // Connect to server
-db.promise().connect((err) => {
+const connection = db.promise().connect((err) => {
   if(err) throw (err);
 // Then continue.
 }).then(() => { console.log(`Database Localized...\n`);
 }).then(() => { startUp();
 });
 
-module.exports = db;
+module.exports = { db , connection };
