@@ -2,6 +2,7 @@ const inquirer = require('inquirer');
 const viewalldepartments = require('../db/query-db/departments/view');
 const viewallroles = require('../db/query-db/roles/view');
 const viewallemployees = require('../db/query-db/employees/view');
+const addadepartment = require('../db/modify-db/departments/add-department');
 const logout = require('../disconnect/disconnect');
 
 
@@ -29,7 +30,6 @@ function startUp(){
 
         startUp();
     });
-
 
 }
 
