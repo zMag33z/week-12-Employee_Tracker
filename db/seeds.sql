@@ -1,4 +1,4 @@
--- third source seeds.sql --
+-- third SOURCE db/seeds.sql; --
 INSERT INTO department (department)
 VALUES
   ('Engineering'),
