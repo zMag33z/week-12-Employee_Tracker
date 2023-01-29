@@ -2,7 +2,9 @@ const db = require("../../../connect/localize-db");
 
 function addarole(inputInformation){
 
-    console.log(inputInformation);
+    console.log('add role');
+
+    // console.log('end', inputInformation.split(' '));
         // return db.promise()
         // .query('INSERT INTO department (department) VALUES (?)', inputInformation)
         // .then(([collected]) => {

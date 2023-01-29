@@ -5,7 +5,8 @@ const viewalldepartments = require('../db/query-db/departments/view');
 const viewallroles = require('../db/query-db/roles/view');
 const viewallemployees = require('../db/query-db/employees/view');
 const addadepartment = require('../db/modify-db/departments/add-department');
-const addarole = require('../db/modify-db/departments/add-department');
+const addarole = require('../db/modify-db/roles/add-role');
+const addanemployee = require('../db/modify-db/employees/add-employee');
 const logout = require('../disconnect/disconnect');
 
 // validation-filter properties.
@@ -78,7 +79,6 @@ function startUp(){
         }
     ]).then(async function(input){
 
-        console.log('then',input.add);
         // Switch statement and variables depending on prompt instances.
         let selection = input.query;
         let inputInformation;
@@ -88,11 +88,14 @@ function startUp(){
             case 'View All Roles':
             case 'View All Employees':
             case 'Log Out': {
+                console.log('view case');
                 selection = input.query.split(' ').join('').toLowerCase() + '()';
                 break;
             }
             case 'Add A Department':
-            case 'Add A Role': {
+            case 'Add A Role':
+            case 'Add An Employee': {
+                console.log('add case');
                 inputInformation = input.add;
                 selection = input.query.split(' ').join('').toLowerCase() + `(inputInformation)`;
                 break;
@@ -102,6 +105,7 @@ function startUp(){
             //     break;
             // }
         }
+        console.log('eval', selection);
         await eval(selection);
         startUp();
     });

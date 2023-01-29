@@ -1,6 +1,9 @@
 const db = require("../../../connect/localize-db");
 
 function viewallemployees(){
+
+    console.log('view employees');
+    
     return db.promise()
     .query(`
 SELECT e.id, CONCAT(e.first_name, ' ', e.last_name) AS employee, r.title, d.department, r.salary,CONCAT (m.first_name, ' ', m.last_name) AS manager
