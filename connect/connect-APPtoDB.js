@@ -1,5 +1,5 @@
 /*  CONNECT app to database  */
-
+require('console.table');
 const db = require('./localize-db');
 const startUp = require('../prompt/start-prompt');
 

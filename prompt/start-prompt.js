@@ -18,6 +18,7 @@ const requireInput = (input) => {
     return true;
 };
 
+// Prompts set to only message when: previous prompt meets set value.
 function startUp(){
     inquirer.prompt([
         {
@@ -47,7 +48,7 @@ function startUp(){
         {
             when: input => input.query === 'Add A Role',
             name: 'add',
-            message: 'Enter name of Department to update.  (case sensitive)',
+            message: 'Enter name of New Role. (case sensitive)',
             type: 'input',
             validate: requireInput,
 
@@ -56,15 +57,30 @@ function startUp(){
         {
             when: input => input.query === 'Add A Role',
             name: 'addThis',
-            message: 'Enter name of New Role.',
+            message: 'Enter name of Department for New Role.',
             type: 'input',
             validate: requireInput,
-            filter: (input, previous) => previous.add = previous.add + `, ` + input,
+            filter: (input, previous) => {
+                previous.add = previous.add + `, ` + input;
+                return input;
+            },
+        }
+        ,
+        {
+            when: input => input.query === 'Add A Role',
+            name: 'addThat',
+            message: 'Enter salary amount for New Role.',
+            type: 'input',
+            validate: requireInput,
+            filter: (input, previous) => {
+                previous.add = previous.add + `, ` + input;
+                return input;
+            },
         }
         ,
         {
             when: input => input.query === 'Add An Employee',
-            name: 'addThat',
+            name: 'addAnd',
             message: 'Enter first name of New Employee.  (case sensitive)',
             type: 'input',
             validate: requireInput,
@@ -88,15 +104,13 @@ function startUp(){
             case 'View All Roles':
             case 'View All Employees':
             case 'Log Out': {
-                console.log('view case');
                 selection = input.query.split(' ').join('').toLowerCase() + '()';
                 break;
             }
             case 'Add A Department':
             case 'Add A Role':
             case 'Add An Employee': {
-                console.log('add case');
-                inputInformation = input.add;
+                inputInformation = input.add.split(', ');
                 selection = input.query.split(' ').join('').toLowerCase() + `(inputInformation)`;
                 break;
             }
@@ -105,7 +119,7 @@ function startUp(){
             //     break;
             // }
         }
-        console.log('eval', selection);
+        // eval turns string into function
         await eval(selection);
         startUp();
     });
