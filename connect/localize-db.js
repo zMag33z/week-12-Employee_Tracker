@@ -1,6 +1,7 @@
+/*  Database identity when called.  */
+
 const mysql = require('mysql2');
 
-// Use this connection
 const db = mysql.createConnection(
   {
     host: 'localhost',

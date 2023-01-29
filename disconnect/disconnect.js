@@ -1,3 +1,5 @@
+/*  End database / Close application  */
+
 const db = require("../connect/localize-db");
 
 function logout(){

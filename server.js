@@ -1,3 +1,5 @@
+/*  SERVER  */
+
 const express = require('express');
 const db = require('./connect/localize-db');
 const connection = require('./connect/connect-APPtoDB');
@@ -13,3 +15,6 @@ app.get(db, (req, res) => { if(err)throw err });
 app.get(connection, (req,res) => { if(err)throw err});
 
 app.listen(PORT, () => console.log(`\nConnecting Database to local port ${PORT}!\n`));
+
+
+/*  zMaG33z  */
