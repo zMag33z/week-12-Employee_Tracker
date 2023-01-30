@@ -14,14 +14,23 @@ LEFT JOIN employee m ON m.id = e.manager_id;`)
     .catch(err => { console.log(err) });
 };
 
-// function viewallmanagers(){
-//     return db.promise()
-//     .query(`
-// `)
-//     .then(([collected]) => {
-//         return console.table(``, collected);
-//     })
-//     .catch(err => { console.log(err) });
-// }
+function viewallmanagers(){
+    return db.promise()
+    .query(`
+SELECT e.id, CONCAT(e.first_name, ' ', e.last_name) AS manager, d.department, r.title
+FROM employee e
+LEFT JOIN role r ON e.role_id = r.id
+LEFT JOIN department d on d.id = r.dept_id
+WHERE is_manager = 1 IN (SELECT id FROM employee);
+`)
+    .then(([collected]) => {
+        return console.table(``, collected);
+    })
+    .catch(err => { console.log(err) });
+}
 
-module.exports = viewallemployees;
+module.exports = {
+    viewallemployees: viewallemployees,
+     viewallmanagers: viewallmanagers,
+    
+    };

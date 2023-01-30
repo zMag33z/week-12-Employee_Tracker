@@ -3,7 +3,7 @@ const inquirer = require('inquirer');
 // need to refractor to another file just to empty the area here.
 const viewalldepartments = require('../db/query-db/departments/view');
 const viewallroles = require('../db/query-db/roles/view');
-const viewallemployees = require('../db/query-db/employees/view');
+const { viewallemployees, viewallmanagers } = require('../db/query-db/employees/view');
 const addadepartment = require('../db/modify-db/departments/add-department');
 const addarole = require('../db/modify-db/roles/add-role');
 const addanemployee = require('../db/modify-db/employees/add-employee');
@@ -28,6 +28,11 @@ const pullRoleList = async () => {
     await viewallroles();
     return;
 };
+
+const pullManagerList = async () => {
+    await viewallmanagers();
+    return;
+}
 
 const verifyID = input => {
     let numeric = /^-?\d+$/.test(input);
@@ -76,7 +81,7 @@ const notSalary = (input, previous) => {
 
 const employeeTypeList = (input, previous) => {
     if(previous.manager === true){
-
+        
     }
     if(previous.manager === false){
         
@@ -137,11 +142,24 @@ function startUp(){
             filter: notSalary,
         }
         ,
-        {
+        {   //employee start
             when: input => input.query === 'Add An Employee',
             name: 'manager',
             message: 'Is this Employee A Manager?',
-            type: 'confirm'
+            type: 'confirm',
+            filter: input => {
+                switch(input){
+                    case true: {
+                        input = 1;
+                        break;
+                    }
+                    case false: {
+                        input = 0;
+                        break;
+                    }
+                };
+                return input;
+            }
         }
         ,
         {
@@ -179,7 +197,7 @@ function startUp(){
             name: 'addManager',
             message: 'Enter Manager Id over New Employee.\n',
             type: 'input',
-            default: pullDeptList,
+            default: pullManagerList,
             validate: verifyID,
             filter: notID,
         }
