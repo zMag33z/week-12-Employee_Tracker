@@ -9,6 +9,7 @@ const addarole = require('../db/modify-db/roles/add-role');
 const addanemployee = require('../db/modify-db/employees/add-employee');
 const logout = require('../disconnect/disconnect');
 
+
 // validation-filter properties.
 const requireInput = (input) => {
     while(input.length === 0){
@@ -16,6 +17,51 @@ const requireInput = (input) => {
         return false;
     }
     return true;
+};
+
+const verifyID = input => {
+    let numeric = /^-?\d+$/.test(input);
+    let negative = input <= 0;
+    while(!numeric || negative){
+        console.log(`\n\x1b[41m\x1b[90m Enter A Number \x1b[0m\x1b[0m\n`);
+        return false;
+    }
+    return true;
+};
+
+const notID = (input, previous) => {
+    let numeric = /^-?\d+$/.test(input);
+    let negative = input <= 0;
+    if(!numeric || negative){
+        input = '';
+        return input;
+    }
+    previous.add = previous.add + `, ` + input;
+                return input;
+};
+
+const isSalary = (input) => {
+    let length = input.length >= 5;
+    let numeric = /^-?\d+$/.test(input);
+    let negative = input <= 0;
+
+    while(!length || !numeric || negative){
+        console.log(`\n\x1b[41m\x1b[90m Enter 5 digit Salary. \x1b[0m\x1b[0m\n`);
+        return false;
+    }
+    return true;
+};
+
+const notSalary = (input, previous) => {
+    let length = input.length >= 5;
+    let numeric = /^-?\d+$/.test(input);
+    let negative = input <= 0;
+    if(!length || !numeric || negative){
+        input = '';
+        return input;
+    }
+    previous.add = previous.add + `, ` + input;
+                return input;
 };
 
 // Prompts set to only message when: previous prompt meets set value.
@@ -57,13 +103,10 @@ function startUp(){
         {
             when: input => input.query === 'Add A Role',
             name: 'addThis',
-            message: 'Enter name of Department for New Role.',
+            message: 'Enter id # of Department for New Role.',
             type: 'input',
-            validate: requireInput,
-            filter: (input, previous) => {
-                previous.add = previous.add + `, ` + input;
-                return input;
-            },
+            validate: verifyID,
+            filter: notID,
         }
         ,
         {
@@ -71,11 +114,8 @@ function startUp(){
             name: 'addThat',
             message: 'Enter salary amount for New Role.',
             type: 'input',
-            validate: requireInput,
-            filter: (input, previous) => {
-                previous.add = previous.add + `, ` + input;
-                return input;
-            },
+            validate: isSalary,
+            filter: notSalary,
         }
         ,
         {

@@ -1,6 +1,5 @@
 const db = require('../../../connect/localize-db');
 
-
 function viewalldepartments(){
     return db.promise()
     .query('SELECT * FROM department')
