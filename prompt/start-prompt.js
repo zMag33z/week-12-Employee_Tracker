@@ -19,9 +19,13 @@ const requireInput = (input) => {
     return true;
 };
 
-
 const pullDeptList = async () => {
     await viewalldepartments();
+    return;
+};
+
+const pullRoleList = async () => {
+    await viewallroles();
     return;
 };
 
@@ -70,6 +74,15 @@ const notSalary = (input, previous) => {
                 return input;
 };
 
+const employeeTypeList = (input, previous) => {
+    if(previous.manager === true){
+
+    }
+    if(previous.manager === false){
+        
+    }
+}
+
 // Prompts set to only message when: previous prompt meets set value.
 function startUp(){
     inquirer.prompt([
@@ -92,7 +105,7 @@ function startUp(){
         {
             when: input => input.query === 'Add A Department',
             name: 'add',
-            message: 'Enter name for New Department.',
+            message: `Enter name for New Department.\n`,
             type: 'input',
             validate: requireInput,
         }
@@ -100,7 +113,7 @@ function startUp(){
         {   // Role start
             when: input => input.query === 'Add A Role',
             name: 'add',
-            message: 'Enter name of New Role. (case sensitive)',
+            message: 'Enter name of New Role.\n',
             type: 'input',
             validate: requireInput,
         }
@@ -108,7 +121,7 @@ function startUp(){
         {
             when: input => input.query === 'Add A Role',
             name: 'addThis',
-            message: 'Enter id # of Department for New Role.',
+            message: 'Enter id # of Department for New Role.\n',
             type: 'input',
             default: pullDeptList,
             validate: verifyID,
@@ -118,7 +131,7 @@ function startUp(){
         {
             when: input => input.query === 'Add A Role',
             name: 'addThat',
-            message: 'Enter salary amount for New Role.',
+            message: 'Enter salary amount for New Role.\n',
             type: 'input',
             validate: isSalary,
             filter: notSalary,
@@ -126,18 +139,49 @@ function startUp(){
         ,
         {
             when: input => input.query === 'Add An Employee',
-            name: 'addAnd',
-            message: 'Enter first name of New Employee.  (case sensitive)',
+            name: 'manager',
+            message: 'Is this Employee A Manager?',
+            type: 'confirm'
+        }
+        ,
+        {
+            when: input => input.query === 'Add An Employee',
+            name: 'add',
+            message: 'Enter first name of New Employee.\n',
             type: 'input',
             validate: requireInput,
         }
         ,
         {
             when: input => input.query === 'Add An Employee',
-            name: 'addAnother',
-            message: 'Enter last name of New Employee.  (case sensitive)',
+            name: 'addLast',
+            message: 'Enter last name of New Employee.\n',
             type: 'input',
             validate: requireInput,
+            filter: (input, previous) => {
+                previous.add = previous.add + `, ` + input;
+                return input;
+            }
+        }
+        ,
+        {
+            when: input => input.query === 'Add An Employee',
+            name: 'addRole',
+            message: `Enter Department Role Id for New Employee.\n`,
+            type: 'input',
+            default: pullRoleList,
+            validate: verifyID,
+            filter: notID,
+        }
+        ,
+        {
+            when: input => input.manager === false,
+            name: 'addManager',
+            message: 'Enter Manager Id over New Employee.\n',
+            type: 'input',
+            default: pullDeptList,
+            validate: verifyID,
+            filter: notID,
         }
     ]).then(async function(input){
 

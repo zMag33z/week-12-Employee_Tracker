@@ -1,7 +1,7 @@
 const db = require("../../../connect/localize-db");
 
 function addanemployee(inputInformation){
-        console.log('add department')
+        console.log('add', inputInformation);
 
     // console.log(inputInformation);
         // return db.promise()

@@ -1,9 +1,6 @@
 const db = require("../../../connect/localize-db");
 
-function viewallemployees(){
-
-    console.log('view employees');
-    
+function viewallemployees(){    
     return db.promise()
     .query(`
 SELECT e.id, CONCAT(e.first_name, ' ', e.last_name) AS employee, r.title, d.department, r.salary,CONCAT (m.first_name, ' ', m.last_name) AS manager
@@ -15,6 +12,16 @@ LEFT JOIN employee m ON m.id = e.manager_id;`)
         return console.table(``, collected);
     })
     .catch(err => { console.log(err) });
-}
+};
+
+// function viewallmanagers(){
+//     return db.promise()
+//     .query(`
+// `)
+//     .then(([collected]) => {
+//         return console.table(``, collected);
+//     })
+//     .catch(err => { console.log(err) });
+// }
 
 module.exports = viewallemployees;
