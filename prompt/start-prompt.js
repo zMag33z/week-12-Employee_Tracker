@@ -10,13 +10,19 @@ const addanemployee = require('../db/modify-db/employees/add-employee');
 const logout = require('../disconnect/disconnect');
 
 
-// validation-filter properties.
+// validation-filter properties.     Note: just found loop for inquirer.  useful for future use when gathering multiple inputs needed separately.
 const requireInput = (input) => {
     while(input.length === 0){
         console.log(`\n\x1b[41m\x1b[90m Input Required \x1b[0m\x1b[0m\n`);
         return false;
     }
     return true;
+};
+
+
+const pullDeptList = async () => {
+    await viewalldepartments();
+    return;
 };
 
 const verifyID = input => {
@@ -91,13 +97,12 @@ function startUp(){
             validate: requireInput,
         }
         ,
-        {
+        {   // Role start
             when: input => input.query === 'Add A Role',
             name: 'add',
             message: 'Enter name of New Role. (case sensitive)',
             type: 'input',
             validate: requireInput,
-
         }
         ,
         {
@@ -105,6 +110,7 @@ function startUp(){
             name: 'addThis',
             message: 'Enter id # of Department for New Role.',
             type: 'input',
+            default: pullDeptList,
             validate: verifyID,
             filter: notID,
         }
@@ -135,7 +141,7 @@ function startUp(){
         }
     ]).then(async function(input){
 
-        // Switch statement and variables depending on prompt instances.
+        // Switch statement, variables, strings to function for eval: depending on prompt instances.
         let selection = input.query;
         let inputInformation;
 
