@@ -24,10 +24,17 @@ LEFT JOIN department d on d.id = r.dept_id
 WHERE is_manager = 1 IN (SELECT id FROM employee);
 `)
     .then(([collected]) => {
-        return console.table(``, collected);
+        let compile = collected.map((obj) => {
+            let returnThis = obj.id + ' - ' + obj.manager + ' - ' + obj.department;
+            return returnThis;
+        })
+        return compile;
+
     })
     .catch(err => { console.log(err) });
 }
+
+
 
 module.exports = {
     viewallemployees: viewallemployees,
