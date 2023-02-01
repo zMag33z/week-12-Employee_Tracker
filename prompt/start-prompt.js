@@ -3,14 +3,14 @@ const inquirer = require('inquirer');
 // need to refractor to another file just to empty the area here.
 const { viewalldepartments, listAllDepartments } = require('../db/query-db/departments/view');
 const { viewallroles, viewSpecificRoles } = require('../db/query-db/roles/view');
-const { viewallemployees, viewallmanagers } = require('../db/query-db/employees/view');
+const { viewallemployees, listEachFromRoleType } = require('../db/query-db/employees/view');
 const addadepartment = require('../db/modify-db/departments/add-department');
 const addarole = require('../db/modify-db/roles/add-role');
 const addanemployee = require('../db/modify-db/employees/add-employee');
 const logout = require('../disconnect/disconnect');
 
 
-// validation-filter properties.     Note: just found loop for inquirer.  useful for future use when gathering multiple inputs needed separately.
+// validation-filter properties.
 const requireInput = (input) => {
     while(input.length === 0){
         console.log(`\n\x1b[41m\x1b[90m Input Required \x1b[0m\x1b[0m\n`);
@@ -44,7 +44,6 @@ const notSalary = (input, previous) => {
     }else{
         previous.manager = 0;
     }
-
     previous.add = previous.add + `, ` + input + ', ' + previous.manager;
                 return input;
 };
@@ -68,7 +67,7 @@ function startUp(){
                 ]
         }
         ,
-        {
+        {   // Department
             when: input => input.query === 'Add A Department',
             name: 'add',
             message: `Enter name for New Department.\n`,
@@ -76,14 +75,14 @@ function startUp(){
             validate: requireInput,
         }
         ,
-        {
+        {   // Role start
             when: input => input.query === 'Add A Role',
             name: 'manager',
             message: 'Is this a Manager role?\n',
             type: 'confirm',
         }
         ,
-        {   // Role start
+        {   
             when: input => input.query === 'Add A Role',
             name: 'add',
             message: 'Enter name of New Role.\n',
@@ -140,7 +139,7 @@ function startUp(){
             }
         }
         ,
-        {   // check employee type
+        {   // manager
             when: input => input.query === 'Add An Employee',
             name: 'addRole',
             message: `Select Department Role Id for New Employee.`,
@@ -157,18 +156,41 @@ function startUp(){
             }
         }
         ,
-        {   // if not manager 
+        {   // not manager 
             when: input => input.manager === false,
             name: 'addManager',
             message: 'Select Manager Id over New Employee.',
             type: 'list',
-            choices: viewallmanagers,
+            choices: listEachFromRoleType,
             filter: (input, previous) => {
                 let idOnly = input.charAt(0);
                 let notManager = 0;
                 previous.add = previous.add + ', ' + idOnly + ', ' + notManager;
                 return;
             },
+        }
+        ,
+        {   // Update employee
+            when: input => input.query === 'Update An Employee',
+            name: 'manager',
+            message: 'Is this Employee A Manager?',
+            type: 'confirm',
+        }
+        ,
+        {
+            when: input => input.query === 'Update An Employee',
+            name: 'updateName',
+            message: 'Select Employee to Update',
+            type: 'list',
+            choices: input => listEachFromRoleType(input),
+        }
+        ,
+        {
+            when: input => input.query === 'Update An Employee',
+            name: 'updateRole',
+            message: 'Select Role to Update Employee',
+            type: 'input'
+
         }
     ]).then(async function(input){
 
@@ -196,10 +218,10 @@ function startUp(){
                 selection = input.query.split(' ').join('').toLowerCase() + `(inputInformation, input)`;
                 break;
             }
-            // case ``:{
+            case `Update An Employee`:{
 
-            //     break;
-            // }
+                break;
+            }
         }
         // eval turns string into function
         await eval(selection);
