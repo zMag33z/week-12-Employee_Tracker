@@ -187,13 +187,28 @@ function startUp(){
         ,
         {
             when: input => input.query === 'Update An Employee',
+            name: 'motion',
+            message: 'Employee Promotion OR Demotion',
+            type: 'list',
+            choices: ['Promotion', 'Demotion'],
+            filter: (input, previous) => {
+                if(input === 'Promotion'){
+                    previous.manager = true;
+                }else{
+                    previous.manager = false;
+                }
+            }
+        }
+        ,
+        {
+            when: input => input.query === 'Update An Employee',
             name: 'updateRole',
-            message: 'Select Role to Update Employee',
-            type: 'input'
-
+            message: 'Select Id of Role to Update Employee',
+            type: 'list',
+            choices: input => viewSpecificRoles(input),
         }
     ]).then(async function(input){
-
+        console.log('\x1b[31mCHECKING FOR ENTRANCE\x1b[0m');
 
 
         // Switch statement, variables, strings to function for eval: depending on prompt instances.
@@ -223,6 +238,8 @@ function startUp(){
                 break;
             }
         }
+
+        console.log('\x1b[31mCHECKING FOR EXIT\x1b[0m');
         // eval turns string into function
         await eval(selection);
         startUp();
