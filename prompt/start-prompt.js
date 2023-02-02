@@ -50,7 +50,7 @@ const notSalary = (input, previous) => {
     return input;
 };
 
-// Prompts set to only message when: previous prompt meets set value.
+// Prompts set to only message when: previous prompt meets set value.  Future note: Look into inquirer-loop to reduce when instances.
 function startUp(){
     inquirer.prompt([
         {
