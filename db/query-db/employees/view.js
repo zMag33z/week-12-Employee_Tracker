@@ -16,42 +16,47 @@ LEFT JOIN employee m ON m.id = e.manager_id;`)
 };
 
 // creating list for prompt
-function listEachFromRoleType(input){
-    let query;
-    if(!input.manager){
-        query = `
-        SELECT e.id, CONCAT(e.first_name, ' ', e.last_name) AS manager, d.department, r.title
-        FROM employee e
-        LEFT JOIN role r ON e.role_id = r.id
-        LEFT JOIN department d on d.id = r.dept_id
-        WHERE is_manager = 0 IN (SELECT id FROM employee);
-        `
-    }else{
-        query = `
-        SELECT e.id, CONCAT(e.first_name, ' ', e.last_name) AS manager, d.department, r.title
-        FROM employee e
-        LEFT JOIN role r ON e.role_id = r.id
-        LEFT JOIN department d on d.id = r.dept_id
-        WHERE is_manager = 1 IN (SELECT id FROM employee);
-        `
-    }
+function listNONmanagers(input){
     return db.promise()
-    .query(query)
+    .query( `
+    SELECT e.id, CONCAT(e.first_name, ' ', e.last_name) AS manager, d.department, r.title
+    FROM employee e
+    LEFT JOIN role r ON e.role_id = r.id
+    LEFT JOIN department d on d.id = r.dept_id
+    WHERE is_manager = 0 IN (SELECT id FROM employee);
+    `)
     .then(([collected]) => {
         let compile = collected.map((obj) => {
             let returnThis = obj.id + ' - ' + obj.manager + ' - ' + obj.department;
             return returnThis;
         })
         return compile;
+    })
+    .catch(err => { console.log(err) });
+}
 
+function listManagers(input){
+    return db.promise()
+    .query(`
+    SELECT e.id, CONCAT(e.first_name, ' ', e.last_name) AS manager, d.department, r.title
+    FROM employee e
+    LEFT JOIN role r ON e.role_id = r.id
+    LEFT JOIN department d on d.id = r.dept_id
+    WHERE is_manager = 1 IN (SELECT id FROM employee);
+    `)
+    .then(([collected]) => {
+        let compile = collected.map((obj) => {
+            let returnThis = obj.id + ' - ' + obj.manager + ' - ' + obj.department;
+            return returnThis;
+        })
+        return compile;
     })
     .catch(err => { console.log(err) });
 }
 
 
-
 module.exports = {
     viewallemployees: viewallemployees,
-    listEachFromRoleType: listEachFromRoleType,
-    
+    listNONmanagers: listNONmanagers,
+    listManagers: listManagers    
     };

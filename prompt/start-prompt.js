@@ -1,14 +1,14 @@
 const inquirer = require('inquirer');
 
-// need to refractor to another file just to empty the area here.
+// need to refractor to another file just to empty the area here.  Honestly need to redo the whole thing.
 const { viewalldepartments, listAllDepartments } = require('../db/query-db/departments/view');
 const { viewallroles, viewSpecificRoles } = require('../db/query-db/roles/view');
-const { viewallemployees, listEachFromRoleType } = require('../db/query-db/employees/view');
+const { viewallemployees, listNONmanagers, listManagers } = require('../db/query-db/employees/view');
 const addadepartment = require('../db/modify-db/departments/add-department');
 const addarole = require('../db/modify-db/roles/add-role');
 const addanemployee = require('../db/modify-db/employees/add-employee');
+const updateanemployee = require('../db/modify-db/employees/update-employee');
 const logout = require('../disconnect/disconnect');
-
 
 // validation-filter properties.
 const requireInput = (input) => {
@@ -31,6 +31,7 @@ const isSalary = (input) => {
     return true;
 };
 
+// salary is in the role table and has other values needing tallying
 const notSalary = (input, previous) => {
     let length = input.length >= 5;
     let numeric = /^-?\d+$/.test(input);
@@ -45,7 +46,7 @@ const notSalary = (input, previous) => {
         previous.manager = 0;
     }
     previous.add = previous.add + `, ` + input + ', ' + previous.manager;
-                return input;
+    return input;
 };
 
 // Prompts set to only message when: previous prompt meets set value.
@@ -97,7 +98,7 @@ function startUp(){
             type: 'list',
             choices: listAllDepartments,
             filter: (input, previous) => {
-                let idOnly = input.charAt(0);
+                let idOnly = input.split(' ')[0];
                 previous.add = previous.add + ', ' + idOnly;
                 return;
             }
@@ -146,13 +147,9 @@ function startUp(){
             type: 'list',
             choices: input => viewSpecificRoles(input),
             filter: (input, previous) => {
-                let idOnly = input.charAt(0);
-                previous.add = previous.add + ', ' + idOnly;
-                if(previous.manager === true){
-                    let manager = 1;
-                    previous.add = previous.add + ', ' + manager;
-                }
-                return;
+                let idOnly = input.split(' ')[0];
+                    previous.add = previous.add + ', ' + idOnly;
+                return input;
             }
         }
         ,
@@ -161,13 +158,13 @@ function startUp(){
             name: 'addManager',
             message: 'Select Manager Id over New Employee.',
             type: 'list',
-            choices: listEachFromRoleType,
+            choices: listManagers,
+
             filter: (input, previous) => {
-                let idOnly = input.charAt(0);
-                let notManager = 0;
-                previous.add = previous.add + ', ' + idOnly + ', ' + notManager;
+                let idOnly = input.split(' ')[0];
+                previous.add = previous.add + ', ' + idOnly;
                 return;
-            },
+            }
         }
         ,
         {   // Update employee
@@ -177,46 +174,70 @@ function startUp(){
             type: 'confirm',
         }
         ,
-        {
-            when: input => input.query === 'Update An Employee',
-            name: 'updateName',
-            message: 'Select Employee to Update',
+        {   // need to refactor this quest and the next because the list functions parameter values
+            when: input => input.manager === true,
+            name: 'add',
+            message: 'Select Id of Employee to Update',
             type: 'list',
-            choices: input => listEachFromRoleType(input),
+            choices: listManagers,
+        }
+        ,
+        {
+            when: input => input.manager === false,
+            name: 'add',
+            message: 'Select Id of Employee to Update',
+            type: 'list',
+            choices: listNONmanagers,
         }
         ,
         {
             when: input => input.query === 'Update An Employee',
             name: 'motion',
-            message: 'Employee Promotion OR Demotion',
+            message: 'Select Promotion, Demotion, or Role Change',
             type: 'list',
-            choices: ['Promotion', 'Demotion'],
+            choices: ['Promotion', 'Demotion', 'Role Change'],
             filter: (input, previous) => {
                 if(input === 'Promotion'){
                     previous.manager = true;
                 }else{
                     previous.manager = false;
                 }
+                return input;
             }
         }
         ,
         {
             when: input => input.query === 'Update An Employee',
-            name: 'updateRole',
-            message: 'Select Id of Role to Update Employee',
+            name: 'newRoleID',
+            message: 'Select Id Role to Update Employee',
             type: 'list',
             choices: input => viewSpecificRoles(input),
+            filter: (input, previous) => {
+                if(previous.motion === 'Promotion'){
+
+                    previous.add = input.split(' ')[0] + ', ' + previous.add.split(' ')[0];
+                }
+                return input;
+            }
+        }
+        ,
+        {
+            when: input => input.motion === 'Demotion' || input.motion === 'Role Change',
+            name: 'addManager',
+            message: 'Select new Manager Id over Updated Employee',
+            type: 'list',
+            choices: listManagers,
+            filter: (input, previous) => {
+                let roleId = previous.newRoleID.split(' ')[0];
+                previous.add = roleId + ', ' + input.split(' ')[0] + ', ' + previous.add.split(' ')[0];
+            }
         }
     ]).then(async function(input){
-        console.log('\x1b[31mCHECKING FOR ENTRANCE\x1b[0m');
-
+        // console.log('\x1b[31mCHECKING FOR ENTRANCE\x1b[0m');
 
         // Switch statement, variables, strings to function for eval: depending on prompt instances.
         let selection = input.query;
         let inputInformation;
-
-    
-
 
         switch(selection){
             case 'View All Departments':
@@ -228,20 +249,16 @@ function startUp(){
             }
             case 'Add A Department':
             case 'Add A Role':
-            case 'Add An Employee': {
+            case 'Add An Employee':
+            case 'Update An Employee': {
                 inputInformation = input.add.split(', ');
                 selection = input.query.split(' ').join('').toLowerCase() + `(inputInformation, input)`;
                 break;
             }
-            case `Update An Employee`:{
-
-                break;
-            }
         }
-
-        console.log('\x1b[31mCHECKING FOR EXIT\x1b[0m');
         // eval turns string into function
         await eval(selection);
+        // console.log('\x1b[31mCHECKING FOR EXIT\x1b[0m');
         startUp();
     });
 }

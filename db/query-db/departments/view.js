@@ -1,7 +1,6 @@
 const db = require('../../../connect/localize-db');
 
-function viewalldepartments(){
-    
+function viewalldepartments(){    
     return db.promise()
     .query('SELECT * FROM department;')
     .then(([collected]) => {
@@ -12,16 +11,13 @@ function viewalldepartments(){
 
 function listAllDepartments(){
     return db.promise()
-    .query(`
-SELECT * FROM department;
-`)
+    .query(`SELECT * FROM department;`)
     .then(([collected]) => {
         let compile = collected.map((obj) => {
             let returnThis = obj.id + ' - ' + obj.department;
             return returnThis;
         })
         return compile;
-
     })
     .catch(err => { console.log(err) });
 }
