@@ -7,6 +7,7 @@
 
 - [Getting Started](#getting)
 - [Installations](#installations)
+- [Setup](#setup)
 - [Usage](#usage)
 - [Tests](#tests)
 - [Resources](#resources)
@@ -33,8 +34,24 @@ npm init -y
 npm install
 ```
 
+## Setup:
+
+Now you will need to travel to the connect folder.<br>Select file *localize-db.js*.<br>Here you will need to place your *own* mysql database password in the field labeled *password*.
+
+Also before running the application, you will need to create and seed the database through mysql.<br>On the command line type *Example 1* below.<br>Then enter your password.<br><br>Next on the command line type *Example 2* below.<br>This will create the database, tables to the database, and seed the information provided for the tables.<br><br>Now logout of mysql by typing ***Exit*** on the command line.
+
+*Example 1:*
+```shell
+mysql -u root -p
+```
+
+*Example 2:*
+```mysql
+SOURCE db/schema.sql; SOURCE db/tables.sql; SOURCE db/seeds.sql;
+```
+
 ## Usage:
-  
+
 Now to run the application in the command line type the *Example* below.<br>The application will '*connect to the database*',&nbsp;&nbsp;then make a '*connection to your local host*',&nbsp;&nbsp;which will in turn '*start the application process*'.
 
 *Example:*
@@ -42,9 +59,15 @@ Now to run the application in the command line type the *Example* below.<br>The 
 npm start
 ```
 
-![selftest1](./assets/selfmadetest.png)
+*Screenshot 1*
 
-**Walkthrough video [*click here*.](https://www.google.com)**
+![opening of app](./assets/opening.png)
+
+*Screenshot 2*
+
+![lists of app](./assets/lists.png)
+
+**Walkthrough video [*click here*.](https://drive.google.com/file/d/1E_d43Bk0lWKk0F_CDHimTneuFla4qcdL/view)**
 
 ## Tests:
 
