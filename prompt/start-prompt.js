@@ -57,12 +57,6 @@ function startUp(){
         name: 'query',
         message: 'What would you like to do?',
         type: 'list',
-        default: () => console.log(`\x1b[33m*Use caution:\x1b[0m
-    \x1b[36mFor BEST list display and Database accuracy
-    Add a New Manager Role OR Demote Manager from current Role
-    'Before'
-    Adding a New Manager OR Promoting another Employee to Manager
-    \x1b[0m`),
         choices: [
                     'View All Departments',
                     'View All Roles',
